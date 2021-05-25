@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Manage flights";
+    Layout = "~/Views/Shared/Airport/_LayoutAirport.cshtml";
+}
+@model List<WebApplication1.Models.Airport.ManageBookedFlightsViewModel>
+@using WebApplication1.EfStuff.Model.Airport
+@section Styles {
+    <link href="~/Airport/css/manageBookedFlights/manageBookedFlights.css" rel="stylesheet" />
+}
+<div class="container justify-content-md-center">
+    <div class="row-auto">
+        <div class="col">
+            <table id="flights-table" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Рейс</th>
+                        <th id="place" scope="col">Куда</th>
+                        <th scope="col">Время вылета</th>
+                        <th scope="col">Статус</th>
+                        <th scope="col">Авиакомпания</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var flight in Model)
+                    {
+                        <tr>
+                            <th class="align-middle">@flight.TailNumber</th>
+                            <td class="align-middle">@flight.Destination</td>
+                            <td class="align-middle">@flight.DepartureTime</td>
+                            <td class="align-middle">@(flight.FlightStatus == @FlightStatus.OnTime ? "On Time" : flight.FlightStatus.ToString())</td>
+                            <td class="align-middle">@flight.Airline</td>
+                            <td><a class="rmFlight" data-id="@flight.Id" href="#">Удалить</a></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row-auto">
+        <div class="col">
+            @if (!Model.Any())
+            {
+                <p>Нет забронированных билетов. <a href="@Url.Action("AvailableFlights", "Airport")">Купить.</a></p>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/Airport/js/manageBookedFlights/script.js"></script>
+}
+

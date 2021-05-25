@@ -24,20 +24,34 @@ namespace WebApplication1.Controllers.Airport
 
         public IActionResult AvailableFlights()
         {
-           var departingFlightsAvailableForBooking = _airpotPresentation.GetAvailableFlights();
+            var departingFlightsAvailableForBooking = _airpotPresentation.GetAvailableFlights();
             return View(departingFlightsAvailableForBooking);
+        }
+
+        [Authorize]
+        public IActionResult ManageBookedFlights()
+        {
+            var flights = _airpotPresentation.GetBookedFlights();
+            return View(flights);
+        }
+
+        [Authorize]
+        public JsonResult RemoveFlight(long flightId)
+        {
+            return Json(_airpotPresentation.RemoveFlight(flightId));
         }
 
         [Authorize]
         public IActionResult BookTicket(long id)
         {
-            if (!_airpotPresentation.FlightIsValid(id) || _airpotPresentation.FlightIsAlreadyBooked(id)) 
+            if (!_airpotPresentation.FlightIsValid(id) || _airpotPresentation.FlightIsAlreadyBooked(id))
             {
                 return RedirectToAction("AvailableFlights");
             }
             _airpotPresentation.BookTicket(id);
             return RedirectToAction("BookingConfirmation");
         }
+        [Authorize]
         public IActionResult BookingConfirmation()
         {
             return View();

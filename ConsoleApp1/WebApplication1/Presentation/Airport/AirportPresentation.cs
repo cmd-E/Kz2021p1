@@ -77,5 +77,44 @@ namespace WebApplication1.Presentation.Airport
             _citizenRepository.Save(citizen);
             _flightsRepository.Save(selectedFlight);
         }
+
+        public List<ManageBookedFlightsViewModel> GetBookedFlights()
+        {
+            var citizen = _userService.GetUser();
+            if (citizen == null)
+            {
+                return new List<ManageBookedFlightsViewModel>();
+            }
+            var passenger = _passengersRepository.GetPassengerByCitizenId(citizen.Id);
+            if (passenger == null)
+            {
+                return new List<ManageBookedFlightsViewModel>();
+            }
+            var flights = _passengersRepository.GetFlightsByPassengerId(passenger.Id);
+            var flightsVM = flights.Select(f => _mapper.Map<ManageBookedFlightsViewModel>(f)).ToList();
+            return flightsVM;
+        }
+
+        public bool RemoveFlight(long flightId)
+        {
+            var citizen = _userService.GetUser();
+            if (citizen == null)
+            {
+                return false;
+            }
+            var passenger = _passengersRepository.GetPassengerByCitizenId(citizen.Id);
+            if (passenger == null)
+            {
+                return false;
+            }
+            var selectedFlight = passenger.Flights.SingleOrDefault(f => f.Id == flightId);
+            if (selectedFlight != null)
+            {
+                passenger.Flights.Remove(selectedFlight);
+                _passengersRepository.Save(passenger);
+                return true;
+            }
+            return false;
+        }
     }
 }

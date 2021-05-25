@@ -27,13 +27,19 @@ namespace WebApplication1.Profiles.Airport
                 .ForMember(nameof(Flight.Place), opt => opt.MapFrom(viewModel => viewModel.Destination));
             CreateMap<Flight, AvailableFlightsViewModel>()
                 .ForMember(nameof(AvailableFlightsViewModel.DepartureTime), opt => opt.MapFrom(f => f.Date.ToString("dd.MM.yyyy HH:mm")))
-                .ForMember(nameof(DepartingFlightInfoViewModel.Destination), opt => opt.MapFrom(f => f.Place));
+                .ForMember(nameof(AvailableFlightsViewModel.Destination), opt => opt.MapFrom(f => f.Place));
             CreateMap<AvailableFlightsViewModel, Flight>()
                 .ForMember(nameof(Flight.Date), opt => opt.MapFrom(viewModel => DateTime.Parse(viewModel.DepartureTime)))
                 .ForMember(nameof(Flight.Place), opt => opt.MapFrom(viewModel => viewModel.Destination));
             CreateMap<Citizen, Passenger>()
                 .ForMember(nameof(Passenger.CitizenId), opt => opt.MapFrom(c => c.Id))
                 .ForMember(nameof(Passenger.Id), opt => opt.Ignore());
+            CreateMap<ManageBookedFlightsViewModel, Flight>()
+                .ForMember(nameof(Flight.Date), opt => opt.MapFrom(viewModel => DateTime.Parse(viewModel.DepartureTime)))
+                .ForMember(nameof(Flight.Place), opt => opt.MapFrom(viewModel => viewModel.Destination));
+            CreateMap<Flight, ManageBookedFlightsViewModel>()
+                .ForMember(nameof(ManageBookedFlightsViewModel.DepartureTime), opt => opt.MapFrom(f => f.Date.ToString("dd.MM.yyyy HH:mm")))
+                .ForMember(nameof(ManageBookedFlightsViewModel.Destination), opt => opt.MapFrom(f => f.Place));
         }
     }
 }

@@ -12,5 +12,7 @@ namespace WebApplication1.Presentation.Airport
         List<AvailableFlightsViewModel> GetAvailableFlights();
         List<IncomingFlightInfoViewModel> GetIndexViewModel();
         bool FlightIsAlreadyBooked(long id);
+        public List<ManageBookedFlightsViewModel> GetBookedFlights();
+        public bool RemoveFlight(long flightId);
     }
 }
