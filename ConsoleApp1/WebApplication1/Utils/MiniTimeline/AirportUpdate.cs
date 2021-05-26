@@ -12,6 +12,7 @@ namespace WebApplication1.Utils.MiniTimeline
 {
     public class AirportUpdate
     {
+        private int _landingStripCapacity = 10;
         private IServiceProvider _serviceProvider;
         public AirportUpdate(IServiceProvider serviceProvider)
         {
@@ -32,16 +33,17 @@ namespace WebApplication1.Utils.MiniTimeline
         {
             using (var scope = _serviceProvider.CreateScope())
             {
-                var landedFlights = 0;
                 var _citizenRepository = scope.ServiceProvider.GetRequiredService<ICitizenRepository>();
                 var _flightsRepository = scope.ServiceProvider.GetRequiredService<IFlightsRepository>();
+                var planesOnLandingStrip = _flightsRepository.GetLandedFlights().Count();
                 var arrivingFlights = _flightsRepository.GetArrivingFlights();
-                arrivingFlights.ForEach(f =>
+                for (int i = 0; i < _landingStripCapacity - planesOnLandingStrip && i < arrivingFlights.Count(); i++)
                 {
-                    f.FlightStatus = FlightStatus.Landed;
-                    _flightsRepository.Save(f);
-                    landedFlights++;
-                });
+                    arrivingFlights[i].FlightStatus = FlightStatus.Landed;
+                    _flightsRepository.Save(arrivingFlights[i]);
+                    arrivingFlights.RemoveAt(i);
+                }
+                DelayFlights(arrivingFlights);
             }
         }
 
@@ -71,21 +73,22 @@ namespace WebApplication1.Utils.MiniTimeline
         {
             using (var scope = _serviceProvider.CreateScope())
             {
-                var departedFlights = 0;
                 var _citizenRepository = scope.ServiceProvider.GetRequiredService<ICitizenRepository>();
                 var _flightsRepository = scope.ServiceProvider.GetRequiredService<IFlightsRepository>();
                 var departingFlights = _flightsRepository.GetDepartingFlights();
-                departingFlights.ForEach(f =>
+                var planesOnLandingStrip = _flightsRepository.GetLandedFlights();
+                for (int i = 0; i < _landingStripCapacity - planesOnLandingStrip.Count() && i < departingFlights.Count(); i++)
                 {
-                    f.Passengers.ForEach(p =>
+                    departingFlights[i].Passengers.ForEach(p =>
                     {
                         p.Citizen.IsOutOfCity = true;
                         _citizenRepository.Save(p.Citizen);
                     });
-                    f.FlightStatus = FlightStatus.Departed;
-                    _flightsRepository.Save(f);
-                    departedFlights++;
-                });
+                    departingFlights[i].FlightStatus = FlightStatus.Departed;
+                    _flightsRepository.Save(departingFlights[i]);
+                    departingFlights.RemoveAt(i);
+                }
+                DelayFlights(departingFlights);
             }
         }
 
@@ -119,6 +122,20 @@ namespace WebApplication1.Utils.MiniTimeline
                 }
                 flight.Date = DateTime.Now.AddDays(random.Next(5)).AddHours(random.Next(12)).AddMinutes(random.Next(30));
                 _flightsRepository.Save(flight);
+            }
+        }
+
+        private void DelayFlights(List<Flight> flights)
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                var _flightsRepository = scope.ServiceProvider.GetRequiredService<IFlightsRepository>();
+                flights.ForEach(f =>
+                {
+                    f.FlightStatus = FlightStatus.Delayed;
+                    f.Date.AddMinutes(15);
+                    _flightsRepository.Save(f);
+                });
             }
         }
     }

@@ -71,7 +71,7 @@ namespace WebApplication1.EfStuff.Repositoryies.Airport
         public List<Flight> GetFlightsAvailableForBooking()
         {
             return _dbSet
-                .Where(flight => flight.FlightStatus == FlightStatus.OnTime && flight.FlightType == FlightType.DepartingFlight && flight.Passengers.Count() < 100)
+                .Where(flight => (flight.FlightStatus == FlightStatus.OnTime || flight.FlightStatus == FlightStatus.Delayed) && flight.FlightType == FlightType.DepartingFlight && flight.Passengers.Count() < 100)
                 .ToList();
         }
 

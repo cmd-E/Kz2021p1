@@ -28,7 +28,7 @@
                             <th class="align-middle">@flight.TailNumber</th>
                             <td class="align-middle">@flight.Destination</td>
                             <td class="align-middle">@flight.DepartureTime</td>
-                            <td class="align-middle">@(flight.FlightStatus == @FlightStatus.OnTime ? "On Time" : flight.FlightStatus.ToString())</td>
+                            <td class="align-middle @Html.GetColorClassByFlightStatus(@flight.FlightStatus)">@(flight.FlightStatus == @FlightStatus.OnTime ? "On Time" : flight.FlightStatus.ToString())</td>
                             <td class="align-middle">@flight.Airline</td>
                             <td><a class="rmFlight" data-id="@flight.Id" href="#">Удалить</a></td>
                         </tr>
