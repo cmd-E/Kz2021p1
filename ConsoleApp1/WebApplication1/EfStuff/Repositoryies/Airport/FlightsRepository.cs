@@ -74,7 +74,18 @@ namespace WebApplication1.EfStuff.Repositoryies.Airport
                 .Where(flight => (flight.FlightStatus == FlightStatus.OnTime || flight.FlightStatus == FlightStatus.Delayed) && flight.FlightType == FlightType.DepartingFlight && flight.Passengers.Count() < 100)
                 .ToList();
         }
-
+        /// <summary>
+        /// Returns flights which have flight status set to cancelled
+        /// </summary>
+        /// <returns></returns>
+        public List<Flight> GetCancelledFlights()
+        {
+            return _dbSet.Where(f => f.FlightStatus == FlightStatus.Canceled).ToList();
+        }
+        /// <summary>
+        /// Checks if database has any flights
+        /// </summary>
+        /// <returns></returns>
         public bool HasAnyFlights()
         {
             return _dbSet.Any();

@@ -40,5 +40,10 @@ namespace WebApplication1.EfStuff.Repositoryies.Airport.Intrefaces
         /// </summary>
         /// <returns></returns>
         bool HasAnyFlights();
+        /// <summary>
+        /// Returns flights which have flight status set to cancelled
+        /// </summary>
+        /// <returns></returns>
+        public List<Flight> GetCancelledFlights();
     }
 }

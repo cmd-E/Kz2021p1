@@ -25,7 +25,8 @@ namespace WebApplication1.Utils.MiniTimeline
             Task.WhenAll(
                 Task.Run(() => LandFlights()),
                 Task.Run(() => DepartPassengers()),
-                Task.Run(() => ReturnFlights())
+                Task.Run(() => ReturnFlights()),
+                Task.Run(() => ReassignCancelledFlights())
                 );
         }
 
@@ -100,6 +101,24 @@ namespace WebApplication1.Utils.MiniTimeline
                 var _flightsRepository = scope.ServiceProvider.GetRequiredService<IFlightsRepository>();
                 var returningFlights = _flightsRepository.GetDepartedFlights();
                 ConvertFlights(returningFlights, _flightsRepository);
+            }
+        }
+
+        private void ReassignCancelledFlights()
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                Random random = new Random();
+                string[] places = new string[] { "Moscow", "New York", "Sydney", "Los Angeles", "Berlin", "Tokyo", "Paris", "Istanbul", "Rome", "Krakow", "Singapore" };
+                var _flightsRepository = scope.ServiceProvider.GetRequiredService<IFlightsRepository>();
+                var cancelledFlights = _flightsRepository.GetCancelledFlights();
+                cancelledFlights.ForEach(f =>
+                {
+                    f.Date = DateTime.Now.AddDays(random.Next(5)).AddHours(random.Next(12)).AddMinutes(random.Next(30));
+                    f.Place = places[random.Next(places.Length)];
+                    f.FlightStatus = FlightStatus.OnTime;
+                    _flightsRepository.Save(f);
+                });
             }
         }
 
