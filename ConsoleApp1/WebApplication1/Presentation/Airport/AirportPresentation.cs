@@ -43,6 +43,14 @@ namespace WebApplication1.Presentation.Airport
 
         public List<AvailableFlightsViewModel> GetAvailableFlights()
         {
+            var citizen = _userService.GetUser();
+            if (citizen != null)
+            {
+                return _flightsRepository
+                .GetFlightsAvailableForBookingForCurrentCitizen(citizen)
+                .Select(flight => _mapper.Map<AvailableFlightsViewModel>(flight))
+                .ToList();
+            }
             return _flightsRepository
                 .GetFlightsAvailableForBooking()
                 .Select(flight => _mapper.Map<AvailableFlightsViewModel>(flight))

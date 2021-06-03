@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using WebApplication1.EfStuff.Model;
 using WebApplication1.EfStuff.Model.Airport;
 
 namespace WebApplication1.EfStuff.Repositoryies.Airport.Intrefaces
@@ -15,6 +16,11 @@ namespace WebApplication1.EfStuff.Repositoryies.Airport.Intrefaces
         /// </summary>
         /// <returns></returns>
         List<Flight> GetFlightsAvailableForBooking();
+        /// <summary>
+        /// Returns flights which have free seats and flight status set to On Time and are not booked by citizen
+        /// </summary>
+        /// <returns></returns>
+        List<Flight> GetFlightsAvailableForBookingForCurrentCitizen(Citizen citizen);
         /// <summary>
         /// Returns flights which have flight status set to Landed
         /// </summary>

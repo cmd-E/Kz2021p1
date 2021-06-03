@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using WebApplication1.EfStuff.Model;
 using WebApplication1.EfStuff.Model.Airport;
 using WebApplication1.EfStuff.Repositoryies.Airport.Intrefaces;
 using WebApplication1.Models.Airport;
@@ -72,6 +73,16 @@ namespace WebApplication1.EfStuff.Repositoryies.Airport
         {
             return _dbSet
                 .Where(flight => (flight.FlightStatus == FlightStatus.OnTime || flight.FlightStatus == FlightStatus.Delayed) && flight.FlightType == FlightType.DepartingFlight && flight.Passengers.Count() < 100)
+                .ToList();
+        }
+        /// <summary>
+        /// Returns flights which have free seats and flight status set to On Time and are not booked by citizen
+        /// </summary>
+        /// <returns></returns>
+        public List<Flight> GetFlightsAvailableForBookingForCurrentCitizen(Citizen citizen)
+        {
+            return _dbSet
+                .Where(flight => (flight.FlightStatus == FlightStatus.OnTime || flight.FlightStatus == FlightStatus.Delayed) && flight.FlightType == FlightType.DepartingFlight && flight.Passengers.Count() < 100 && !citizen.Passenger.Flights.Contains(flight))
                 .ToList();
         }
         /// <summary>
