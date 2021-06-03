@@ -64,12 +64,14 @@ namespace WebApplication1.Presentation.Airport
         {
             var selectedFlight = _flightsRepository.Get(id);
             var citizen = _userService.GetUser();
-            var passenger = _passengersRepository.GetPassengerByCitizenId(citizen.Id) ?? _mapper.Map<Passenger>(citizen);
-
-            passenger.Citizen ??= citizen;
-            passenger.Flights ??= new List<Flight>();
-            citizen.Passenger ??= passenger;
-
+            var passenger = _passengersRepository.GetPassengerByCitizenId(citizen.Id);
+            if (passenger == null)
+            {
+                passenger = _mapper.Map<Passenger>(citizen);
+                passenger.Citizen = citizen;
+                passenger.Flights = new List<Flight>();
+                citizen.Passenger = passenger;
+            }
             passenger.Flights.Add(selectedFlight);
             selectedFlight.Passengers.Add(passenger);
 
