@@ -46,4 +46,12 @@
             </table>
         </div>
     </div>
+    <div class="row-auto">
+        <div class="col">
+            @if (!Model.Any())
+            {
+                <p>Похоже доступных рейсов пока нет. <a href="@Url.Action("Index", "Airport")">На главную.</a></p>
+            }
+        </div>
+    </div>
 </div>
